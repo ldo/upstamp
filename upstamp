@@ -1,0 +1,27 @@
+#!/usr/bin/python
+#+
+# This script reads lines from standard input, looking for a sequence like
+# "[d]" at the start of each line, where d is an integer or floating-point
+# number. This is assumed to be a Linux kernel timestamp, indicating the
+# specified number of seconds since boot. This is converted to an absolute
+# time when the line is written to standard output.
+#
+# Created by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+#-
+
+import sys
+import time
+import re
+
+format_time = time.ctime # could use something else later
+boot_time = time.time() - float(open("/proc/uptime", "r").readline().split()[0])
+# sys.stderr.write("boot time = %.6f = %s\n" % (boot_time, format_time(boot_time))) # debug
+timestamp_pat = re.compile(r"^\[\s*(\d+(?:\.\d*)?)\]")
+for line in sys.stdin :
+	match = timestamp_pat.search(line)
+	if match != None :
+		timestamp = float(match.group(1)) + boot_time
+		line = line[:match.start(0)] + "[" + format_time(timestamp) + "]" + line[match.end(0):]
+	#end if
+	sys.stdout.write(line)
+#end for
