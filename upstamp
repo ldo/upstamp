@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #+
 # This script reads lines from standard input, looking for a sequence like
 # "[d]" at the start of each line, where d is an integer or floating-point
